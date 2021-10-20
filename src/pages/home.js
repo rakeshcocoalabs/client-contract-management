@@ -36,9 +36,9 @@ function Home() {
   const makeAPICall = async (obj) => {
     try {
 
-      var url = 'http:143.198.168.131:9000/clients/list-project'
+      var url = 'http://143.198.168.131:9000/clients/list-project'
       if (obj && obj.search){
-        url = 'http:143.198.168.131:9000/clients/list-project?search=' + obj.search;
+        url = 'http://143.198.168.131:9000/clients/list-project?search=' + obj.search;
       }
 
       const response = await axios.get(url, {mode:'cors'});
