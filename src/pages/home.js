@@ -42,10 +42,14 @@ function Home() {
       }
 
       const response = await axios.get(url, {mode:'cors'});
+
+      console.log(response)
     
       if(response && response.data && response.data.output){
 
         let arr = response.data.output
+
+        console.log(response.data)
        
         let outArr = []
 
