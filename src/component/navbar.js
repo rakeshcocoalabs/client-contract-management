@@ -3,7 +3,7 @@ import {
   AppBar,
   Toolbar,
   CssBaseline,
-  Typography,
+  
   makeStyles,
   useTheme,
   useMediaQuery,
@@ -41,10 +41,7 @@ function Navbar() {
     <AppBar position="static">
       <CssBaseline />
       <Toolbar>
-        <Typography variant="h4" className={classes.logo}>
-          Navbar
-          
-        </Typography>
+        
         {isMobile ? (
           <DrawerComponent />
         ) : (
@@ -54,6 +51,17 @@ function Navbar() {
             </Link>
             <Link to="/about" className={classes.link}>
               About
+            </Link>
+
+            <Link to="/add-client" className={classes.link}>
+              Clients
+            </Link>
+
+            <Link to="/add-project" className={classes.link}>
+              Contract
+            </Link>
+            <Link to="/add-invoice" className={classes.link}>
+              Invoice
             </Link>
            
           </div>
