@@ -215,7 +215,9 @@ function Home() {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={placeChange}></TextField>
+                <TextField id="outlined-basic-email" type="text" label="Ship to"
+                        multiline rows={2} variant="outlined" name="Address" size="medium" style={{ textAlign: 'center', alignItems: "center" }}
+                        rowsMax={4} onChange={placeChange} />
 
                 </Grid>
 

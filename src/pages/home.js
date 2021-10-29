@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+import { useHistory } from "react-router-dom";
 import { Button, TextField } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
 import { Grid, FormControl } from '@material-ui/core'
@@ -23,70 +24,77 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import axios from 'axios';
 
+function Home1() {
 
-
-
-
-function Home() {
+  const history = useHistory();
 
   var data1 = [
     {
-        id: "active",
-        name: "Active"
+      id: "active",
+      name: "Active"
     },
     {
-        id: "dropped",
-        name: "Dropped"
+      id: "dropped",
+      name: "Dropped"
     },
     {
-        id: "completed",
-        name: "Completed"
+      id: "completed",
+      name: "Completed"
     }
-];
-  
- 
-  const [dataSet,setDataSet] = React.useState([]);
+  ];
 
-  const [search,setSearch] = React.useState('');
 
-  const [status,setStatus] = React.useState('');
+  const [dataSet, setDataSet] = React.useState([]);
 
-  const [page,setPage] = React.useState(1);
+  const [search, setSearch] = React.useState('');
+
+  const [status, setStatus] = React.useState('');
+
+  const [page, setPage] = React.useState(1);
   // const handleChange = (event) => {
   //   setValue(event.target.value)
   // }
-  
+
   useEffect(() => {
+    let validity = localStorage.getItem('validity')
 
-    
-   
+    const d1 = new Date();
+
+    const d2 = d1.getTime()
+
+    if(d2>validity){
+      history.push("/login");
+    }
+
+    if (dataSet.length === 0) {
       makeAPICall();
-    
-    // eslint-disable-next-line
-  }, [search,status,page])
+    }
 
-  const pageNumberUpdated = (event,data) =>{
-  
+    // eslint-disable-next-line
+  }, [search, status, page, dataSet])
+
+  const pageNumberUpdated = (event, data) => {
+
     console.log(data)
     setPage(data)
   }
 
   const changeStatus = (event) => {
 
-    
+
 
     setStatus(event.target.value)
 
-    
+
   }
 
   const onSearch = (e) => {
 
-    console.log("ji",search)
-    console.log("pi",e.target.value)
+    console.log("ji", search)
+    console.log("pi", e.target.value)
     setSearch(e.target.value);
-    console.log("xi",search)
-   
+    console.log("xi", search)
+
   }
 
   const makeAPICall = async () => {
@@ -94,181 +102,187 @@ function Home() {
 
       var url = 'http://localhost:3080/clients/list-project?'
 
-      console.log("hi",search)
+      console.log("hi", search)
 
-      if(search.length >0 && status.length > 0){
-        url = url + 'search=' + search + '&status=' +status;
+      if (search.length > 0 && status.length > 0) {
+        url = url + 'search=' + search + '&status=' + status;
       }
-      else if (search !== ''){
+      else if (search !== '') {
         url = url + 'search=' + search;
       }
-      else if(status !== ''){
+      else if (status !== '') {
         url = url + 'status=' + status;
       }
 
 
 
 
-      
+
 
       url = url + "&page=" + page
 
       console.log(url);
-      
-      
-      const response = await axios.get(url, {mode:'cors'});
 
-      
-    
-      if(response && response.data && response.data.output){
+
+      const response = await axios.get(url, { mode: 'cors' });
+
+
+
+      if (response && response.data && response.data.output) {
 
         let arr = response.data.output
 
-        
-       
-        let outArr = []
+        console.log(arr)
+        setDataSet(arr)
 
-        for (let x=0;x <arr.length;x++){
-          let item = arr[x];
-          
-          if(item.clientId){
-            var obj1 = {
-              project:item.project,
-              client:item.clientId.contactName,
-              status:item.status
-            }
-          }
-          outArr.push(obj1)
-        }
-      
 
-          setDataSet(outArr)
-          
+        // for (let x = 0; x < arr.length; x++) {
+        //   let item = arr[x];
+
+        //   if (item) {
+        //     if (item.clientId) {
+        //       console.log("hi", item)
+        //       var obj1 = {
+        //         project: item.project,
+        //         client: item.clientId.contactName,
+        //         status: "active"
+        //       }
+        //     }
+        //   }
+        //   console.log("li",dataSet.length)
+        //   setDataSet([...dataSet,obj1])
+        // }
+
+
+
+
       }
     }
     catch (e) {
       console.log(e.message)
     }
-    
+
   }
- 
 
-    return (
-      <Container>
-  
-        <Grid container spacing={3} >
-  
-          <Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
-            <Button variant="contained" color="primary">Add new client</Button>
-          </Grid>
-  
-          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-            <p>Seacrch client</p>
-          </Grid>
-  
-          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-            <TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
-          </Grid>
-  
-          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-            <p>Status</p>
-          </Grid>
-  
-          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-            <FormControl style={{ minWidth: '200px', margin: "1px" }}>
-  
-              {/* <Select
-                id="select-demo"
-                labelId="select-demo"
-                value={''}
-                onChange={changeStatus}
-              >
-  
-                <MenuItem value={"active"}>active</MenuItem>
-                <MenuItem value={"completed"}>completed</MenuItem>
-                <MenuItem value={"dropped"}>dropped</MenuItem>
-  
-              </Select> */}
-               <CustomSelect data={data1} onSelectChange={changeStatus} />
-            </FormControl>
-  
-          </Grid>
-  
+
+  return (
+    <Container>
+
+      <Grid container spacing={3} >
+
+        <Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
+          <Button variant="contained" color="primary">Add new client</Button>
         </Grid>
-  
-        <br />
-        <br />
-        <br />
-  
-        
-  
-        
-        
-  
-        
-        <TableContainer component={Paper}>
-  
-          <Table stickyHeader aria-label="sticky table" >
-  
-            <TableHead>
-  
-              <TableRow>
-  
-  
-  
-                <TableCell align="center">Name</TableCell>
-  
-                <TableCell align="center">Project</TableCell>
-  
-                <TableCell align="center">Status</TableCell>
-  
-  
-  
-              </TableRow>
-  
-            </TableHead>
-  
-            <TableBody>
-  
-              {
-  
-                dataSet.map((p, index) => {
-                  return <TableRow key={index}>
-  
-  
-                    <TableCell align="center">{p.client}</TableCell>
-  
-                    <TableCell align="center">{p.project}</TableCell>
-                    <TableCell align="center">{p.status}</TableCell>
-  
-  
-  
-  
-  
-                  </TableRow>
-  
-                })
-  
-              }
-  
-            </TableBody>
-  
-          </Table>
-  
-        </TableContainer>
-  
-        <br />
-        <br />
-        <div style={{ textAlign: "center" }} align="center">
-  
-          <Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated}/>
-        </div>
-      </Container>
-    )
 
-  
+        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+          <p>Seacrch client</p>
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+          <TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+          <p>Status</p>
+        </Grid>
+
+        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+          <FormControl style={{ minWidth: '200px', margin: "1px" }}>
+
+            {/* <Select
+                  id="select-demo"
+                  labelId="select-demo"
+                  value={''}
+                  onChange={changeStatus}
+                >
+    
+                  <MenuItem value={"active"}>active</MenuItem>
+                  <MenuItem value={"completed"}>completed</MenuItem>
+                  <MenuItem value={"dropped"}>dropped</MenuItem>
+    
+                </Select> */}
+            <CustomSelect data={data1} onSelectChange={changeStatus} />
+          </FormControl>
+
+        </Grid>
+
+      </Grid>
+
+      <br />
+      <br />
+      <br />
+
+
+
+
+
+
+
+      <TableContainer component={Paper}>
+
+        <Table stickyHeader aria-label="sticky table" >
+
+          <TableHead>
+
+            <TableRow>
+
+
+
+              <TableCell align="center">Name</TableCell>
+
+              <TableCell align="center">Project</TableCell>
+
+              <TableCell align="center">Status</TableCell>
+
+
+
+            </TableRow>
+
+          </TableHead>
+
+          <TableBody>
+
+            {
+
+              dataSet.map((p) => {
+                // eslint-disable-next-line
+                { console.log(p) }
+                return <TableRow >
+
+
+                  <TableCell align="center">{p.name}</TableCell>
+
+                  <TableCell align="center">{p.project}</TableCell>
+                  <TableCell align="center">{p.status}</TableCell>
+
+
+
+
+
+                </TableRow>
+
+              })
+
+            }
+
+          </TableBody>
+
+        </Table>
+
+      </TableContainer>
+
+      <br />
+      <br />
+      <div style={{ textAlign: "center" }} align="center">
+
+        <Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated} />
+      </div>
+    </Container>
+  )
+
+
 }
 
-  
- 
-export default Home;
+
+
+export default Home1;
