@@ -5,9 +5,11 @@ import Home from "./pages/home";
 //import Home1 from "./pages/home1";
 import About from "./pages/about";
 import Client from "./pages/add-client";
+import EditClient from "./pages/edit-client";
 import Login from "./pages/login";
 import Project from "./pages/add-contract";
 import invoice from "./pages/add-invoice";
+import download from "./pages/download";
 
 
 function App() {
@@ -21,6 +23,8 @@ function App() {
         <Route  path="/add-client" component={Client} />
         <Route  path="/add-project" component={Project} />
         <Route  path="/add-invoice" component={invoice} />
+        <Route  path="/download" component={download} />
+        <Route  path="/edit-client" component={EditClient} />
         
         
       </Switch>

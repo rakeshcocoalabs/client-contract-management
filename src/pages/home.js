@@ -24,6 +24,8 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import axios from 'axios';
 
+import EditClient from "./edit-client";
+
 function Home1() {
 
   const history = useHistory();
@@ -51,6 +53,9 @@ function Home1() {
   const [status, setStatus] = React.useState('');
 
   const [page, setPage] = React.useState(1);
+
+  const [popUpOpen,setPopUpOpen] = React.useState(false)
+  const [visible,setVisible] = React.useState("block")
   // const handleChange = (event) => {
   //   setValue(event.target.value)
   // }
@@ -165,120 +170,123 @@ function Home1() {
   }
 
 
-  return (
-    <Container>
+  return(
+  <Container style={{ display: {visible}||"block" }}>
 
-      <Grid container spacing={3} >
+    <EditClient open={popUpOpen}/>
 
-        <Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
-          <Button variant="contained" color="primary">Add new client</Button>
-        </Grid>
+    <div >
+    <Grid container spacing={3} >
 
-        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-          <p>Seacrch client</p>
-        </Grid>
+<Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
+<Button variant="contained" color="primary">Add new client</Button>
+</Grid>
 
-        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-          <TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
-        </Grid>
+<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+<p>Seacrch client</p>
+</Grid>
 
-        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-          <p>Status</p>
-        </Grid>
+<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+<TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
+</Grid>
 
-        <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-          <FormControl style={{ minWidth: '200px', margin: "1px" }}>
+<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+<p>Status</p>
+</Grid>
 
-            {/* <Select
-                  id="select-demo"
-                  labelId="select-demo"
-                  value={''}
-                  onChange={changeStatus}
-                >
-    
-                  <MenuItem value={"active"}>active</MenuItem>
-                  <MenuItem value={"completed"}>completed</MenuItem>
-                  <MenuItem value={"dropped"}>dropped</MenuItem>
-    
-                </Select> */}
-            <CustomSelect data={data1} onSelectChange={changeStatus} />
-          </FormControl>
+<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+<FormControl style={{ minWidth: '200px', margin: "1px" }}>
 
-        </Grid>
+  {/* <Select
+        id="select-demo"
+        labelId="select-demo"
+        value={''}
+        onChange={changeStatus}
+      >
 
-      </Grid>
+        <MenuItem value={"active"}>active</MenuItem>
+        <MenuItem value={"completed"}>completed</MenuItem>
+        <MenuItem value={"dropped"}>dropped</MenuItem>
 
-      <br />
-      <br />
-      <br />
+      </Select> */}
+  <CustomSelect data={data1} onSelectChange={changeStatus} />
+</FormControl>
 
+</Grid>
 
+</Grid>
 
-
-
-
-
-      <TableContainer component={Paper}>
-
-        <Table stickyHeader aria-label="sticky table" >
-
-          <TableHead>
-
-            <TableRow>
-
-
-
-              <TableCell align="center">Name</TableCell>
-
-              <TableCell align="center">Project</TableCell>
-
-              <TableCell align="center">Status</TableCell>
-
-
-
-            </TableRow>
-
-          </TableHead>
-
-          <TableBody>
-
-            {
-
-              dataSet.map((p) => {
-                // eslint-disable-next-line
-                { console.log(p) }
-                return <TableRow >
-
-
-                  <TableCell align="center">{p.name}</TableCell>
-
-                  <TableCell align="center">{p.project}</TableCell>
-                  <TableCell align="center">{p.status}</TableCell>
+<br />
+<br />
+<br />
 
 
 
 
 
-                </TableRow>
 
-              })
 
-            }
+<TableContainer component={Paper}>
 
-          </TableBody>
+<Table stickyHeader aria-label="sticky table" >
 
-        </Table>
+<TableHead>
 
-      </TableContainer>
+  <TableRow>
 
-      <br />
-      <br />
-      <div style={{ textAlign: "center" }} align="center">
 
-        <Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated} />
-      </div>
-    </Container>
-  )
+
+    <TableCell align="center">Name</TableCell>
+
+    <TableCell align="center">Project</TableCell>
+
+    <TableCell align="center">Status</TableCell>
+
+
+
+  </TableRow>
+
+</TableHead>
+
+<TableBody>
+
+  {
+
+    dataSet.map((p) => {
+      // eslint-disable-next-line
+      { console.log(p) }
+      return <TableRow >
+
+
+        <TableCell align="center" onClick={()=>{setPopUpOpen(true);setVisible("none")}}>{p.name}</TableCell>
+
+        <TableCell align="center">{p.project}</TableCell>
+        <TableCell align="center">{p.status}</TableCell>
+
+
+
+
+
+      </TableRow>
+
+    })
+
+  }
+
+</TableBody>
+
+</Table>
+
+</TableContainer>
+
+<br />
+<br />
+<div style={{ textAlign: "center" }} align="center">
+
+<Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated} />
+</div>
+    </div>
+  </Container>)
 
 
 }

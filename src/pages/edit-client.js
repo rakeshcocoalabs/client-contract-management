@@ -25,7 +25,7 @@ import axios from 'axios';
 
 
 
-function Home() {
+function Home(props) {
 
 
 
@@ -129,8 +129,8 @@ function Home() {
 
 
 
-    return (
-        <Container>
+    return (props.open) ?  (
+        <Container style={{width:"100%",height:"100%",margin:"0vh"}}>
             <br />
             <br />
             <Grid container spacing={3} >
@@ -262,7 +262,7 @@ function Home() {
 
         </Container>
     )
-
+     : ("")
 
 }
 

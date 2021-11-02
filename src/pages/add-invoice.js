@@ -171,11 +171,10 @@ const AddInvoice = () => {
         data.name = name
         data.contactName = contact
         data.email = email
-        data.number = invoicenumber
+        data.number = parseInt(invoicenumber)
         data.date = invoiceDate.toString();
         data.phone = phone;
-        data.clientId = "616f9b5abbeb4d7e57b572c2"
-
+       
 
 
 
@@ -192,14 +191,27 @@ const AddInvoice = () => {
 
             let id = response.data.output._id;
 
-            const url_1 = "http://localhost:3080/clients/add-invoice-line/" + id
+            const url_1 = "http://localhost:3080/clients/add-invoice-line"
 
 
 
-            let response_2 = await axios.post(url_1, estimate);
-            console.log(response_2);
+            let response_1 = await axios.post(url_1, {id:id,estimate:estimate});
+            console.log(response_1);
+           
 
             //alert(response_2.data);
+
+            const url_2 = "http://localhost:3080/clients/make-pdf" 
+
+            var docObject = {
+                name:name,
+                id:id
+
+            }
+
+            let resp = await axios.post(url_2, docObject);
+
+            console.log(resp)
 
 
 
@@ -291,7 +303,7 @@ const AddInvoice = () => {
                     <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" id={'name'} onChange={onphoneChange} ></TextField>
                 </Grid>
 
-
+                
 
 
 
@@ -355,7 +367,7 @@ const AddInvoice = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" multiline rows={4} onChange={onDescChange} placeholder="description"></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small"  onChange={onDescChange} placeholder="description"></TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4} style={{ textAlign: 'center', alignItems: "center" }} >
