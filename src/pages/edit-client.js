@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import {  TextField,  Button,Select,MenuItem } from '@material-ui/core'
+import React, { useState, useEffect } from "react";
+import { TextField, Button, Select, MenuItem } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
 import { Grid, FormControl } from '@material-ui/core'
 //import CustomSelect from "../component/customselect.js";
@@ -25,7 +25,80 @@ import axios from 'axios';
 
 
 
-function Home(props) {
+function EditClient(props) {
+
+    const [id, setId] = useState('')
+
+    const [load, setLoad] = useState(false)
+
+    const getClient = async (client) => {
+
+
+
+        var url = "http://localhost:3080/clients/get-client/" + client
+
+        const info = await axios.get(url);
+
+        if (info && info.data && info.data.output) {
+
+            const out = info.data.output;
+
+            console.log("jqeeeer", out)
+            setId(out._id);
+
+            setName(out.name);
+            setContact(out.contactName);
+            setcountry(out.country);
+            setEmail(out.email)
+            setLoad(true)
+            setState(out.state)
+            setPhone(out.phone)
+            setGst(out.gstIn)
+            let arr1 = out.address1;
+            var address1 = ""
+            for (let x of arr1) {
+                address1 = address1.concat(x)
+                address1 = address1.concat("\n")
+            }
+            setAddressBill(address1)
+
+            let arr2 = out.address2;
+            var address2 = ""
+            for (let x of arr2) {
+                address2 = address2.concat(x)
+                address2 = address2.concat("\n")
+            }
+            setAddressShip(address2)
+
+        }
+
+
+    }
+
+
+    useEffect(() => {
+
+        let validity = localStorage.getItem('validity')
+
+        const d1 = new Date();
+
+        const d2 = d1.getTime()
+
+        if (d2 > validity) {
+            history.push("/login");
+        }
+
+        let client = localStorage.getItem('client')
+
+        if (client && client !== "" && (load === false)) {
+
+            getClient(client)
+        }
+
+
+
+        // eslint-disable-next-line
+    }, [load])
 
 
 
@@ -41,6 +114,9 @@ function Home(props) {
     const [place, setPlace] = useState('')
     const [phone, setPhone] = useState('')
 
+    const [addressBill, setAddressBill] = useState('')
+    const [addressShip, setAddressShip] = useState('')
+
 
     const nameChange = (e) => { setName(e.target.value); }
     const contactChange = (e) => { setContact(e.target.value); }
@@ -48,7 +124,7 @@ function Home(props) {
     const addressChange = (e) => { setAddress(e.target.value); }
     const gstChange = (e) => { setGst(e.target.value); }
 
-    const countryChange = (e) => { setcountry(e.target.value);console.log("lil",e.target.value) }
+    const countryChange = (e) => { setcountry(e.target.value); console.log("lil", e.target.value) }
     const stateChange = (e) => { setState(e.target.value); }
     const placeChange = (e) => { setPlace(e.target.value); }
     const phoneChange = (e) => { setPhone(e.target.value); }
@@ -75,19 +151,19 @@ function Home(props) {
 
     const addClient = async () => {
 
-       
+
 
         if (name.trim() === "") { alert('fill client name') }
         if (contact.trim() === "") { alert('fill client contact name') }
         if (email.trim() === "") { alert('fill email') }
-        if (address.trim() === "") { alert('fill billing address') }
-        console.log('ji',address.split('\n'))
+        // if (address.trim() === "") { alert('fill billing address') }
+        console.log('ji', address.split('\n'))
 
         var addressList = address.split('\n')
         if (gst.trim() === "") { alert('fill client gst id') }
         if (country.trim() === "") { alert('fill client country id') }
         if (state.trim() === "") { alert('fill client state id') }
-        if (place.trim() === "") { alert('fill client place id') }
+        // if (place.trim() === "") { alert('fill client place id) }
 
         var addressShipList = place.split('\n')
         if (phone.trim() === "") { alert('fill client phone id') }
@@ -96,7 +172,9 @@ function Home(props) {
 
 
         try {
-            let url = "http://localhost:3080/clients/add-client"
+            let url = "http://localhost:3080/clients/update-client/" + id;
+
+            console.log("poooooj", url)
 
             let params = {
                 name: name,
@@ -110,13 +188,13 @@ function Home(props) {
                 address2: addressShipList
             }
 
-            let config = {
-                headers: {
-                    mode: 'cors'
-                }
-            }
+            // let config = {
+            //     headers: {
+            //         mode: 'cors'
+            //     }
+            // }
 
-            let response = await axios.post(url, params, config);
+            let response = await axios.patch(url, params);
 
             console.log(response);
         }
@@ -129,8 +207,8 @@ function Home(props) {
 
 
 
-    return (props.open) ?  (
-        <Container style={{width:"100%",height:"100%",margin:"0vh"}}>
+    return (
+        <Container >
             <br />
             <br />
             <Grid container spacing={3} >
@@ -142,7 +220,7 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={nameChange} id={'name'} ></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={nameChange} id={'name'} value={name} >name</TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -175,7 +253,7 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={contactChange} ></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={contactChange} value={contact} ></TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -183,7 +261,7 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={stateChange} ></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={stateChange} value={state}></TextField>
 
                 </Grid>
 
@@ -193,7 +271,7 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" type="email" onChange={emailChange} ></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" type="email" onChange={emailChange} value={email} ></TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -201,7 +279,7 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={phoneChange}></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={phoneChange} value={phone}></TextField>
 
                 </Grid>
 
@@ -211,8 +289,8 @@ function Home(props) {
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
                     <TextField id="outlined-basic-email" type="text" label="Addres"
-                        multiline rows={2} variant="outlined" name="Address" size="medium" style={{ textAlign: 'center', alignItems: "center" }}
-                        rowsMax={4} onChange={addressChange} />
+                        multiline rows={4} variant="outlined" name="Address" size="medium" style={{ textAlign: 'center', alignItems: "center" }}
+                        rowsMax={4} onChange={addressChange} value={addressBill} />
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -220,9 +298,9 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                <TextField id="outlined-basic-email" type="text" label="Ship to"
-                        multiline rows={2} variant="outlined" name="Address" size="medium" style={{ textAlign: 'center', alignItems: "center" }}
-                        rowsMax={4} onChange={placeChange} />
+                    <TextField id="outlined-basic-email" type="text" label="Ship to"
+                        multiline rows={4} variant="outlined" name="Address" size="medium" style={{ textAlign: 'center', alignItems: "center" }}
+                        rowsMax={4} onChange={placeChange} value={addressShip} />
 
                 </Grid>
 
@@ -232,16 +310,16 @@ function Home(props) {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" type="text" onChange={gstChange}></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" type="text" onChange={gstChange} value={gst}></TextField>
+                </Grid>
+                <br />
+                <br />
+
+                <Grid item xs={12} md={12} lg={12} style={{ textAlign: 'center', alignItems: "center" }} >
+                    <Button style={{ backgroundColor: "#1288AA" }} onClick={addClient}>Update</Button>
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <Button style={{ backgroundColor: "#1288AA" }} onClick={addClient}>Submit</Button>
-                </Grid>
 
-                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <Button style={{ backgroundColor: "#12AD12" }}>Add new contract</Button>
-                </Grid>
 
 
 
@@ -262,10 +340,10 @@ function Home(props) {
 
         </Container>
     )
-     : ("")
+
 
 }
 
 
 
-export default Home;
+export default EditClient;

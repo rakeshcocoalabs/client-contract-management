@@ -24,9 +24,9 @@ import Pagination from '@material-ui/lab/Pagination';
 
 import axios from 'axios';
 
-import EditClient from "./edit-client";
 
-function Home1() {
+
+function Home() {
 
   const history = useHistory();
 
@@ -54,8 +54,7 @@ function Home1() {
 
   const [page, setPage] = React.useState(1);
 
-  const [popUpOpen,setPopUpOpen] = React.useState(false)
-  const [visible,setVisible] = React.useState("block")
+
   // const handleChange = (event) => {
   //   setValue(event.target.value)
   // }
@@ -67,7 +66,7 @@ function Home1() {
 
     const d2 = d1.getTime()
 
-    if(d2>validity){
+    if (d2 > validity) {
       history.push("/login");
     }
 
@@ -100,6 +99,11 @@ function Home1() {
     setSearch(e.target.value);
     console.log("xi", search)
 
+  }
+
+  const editclient = (e) =>{
+    localStorage.setItem('client',e);
+    history.push("/edit-client");
   }
 
   const makeAPICall = async () => {
@@ -141,26 +145,6 @@ function Home1() {
         setDataSet(arr)
 
 
-        // for (let x = 0; x < arr.length; x++) {
-        //   let item = arr[x];
-
-        //   if (item) {
-        //     if (item.clientId) {
-        //       console.log("hi", item)
-        //       var obj1 = {
-        //         project: item.project,
-        //         client: item.clientId.contactName,
-        //         status: "active"
-        //       }
-        //     }
-        //   }
-        //   console.log("li",dataSet.length)
-        //   setDataSet([...dataSet,obj1])
-        // }
-
-
-
-
       }
     }
     catch (e) {
@@ -170,127 +154,100 @@ function Home1() {
   }
 
 
-  return(
-  <Container style={{ display: {visible}||"block" }}>
-
-    <EditClient open={popUpOpen}/>
-
-    <div >
-    <Grid container spacing={3} >
-
-<Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
-<Button variant="contained" color="primary">Add new client</Button>
-</Grid>
-
-<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-<p>Seacrch client</p>
-</Grid>
-
-<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-<TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
-</Grid>
-
-<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-<p>Status</p>
-</Grid>
-
-<Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-<FormControl style={{ minWidth: '200px', margin: "1px" }}>
-
-  {/* <Select
-        id="select-demo"
-        labelId="select-demo"
-        value={''}
-        onChange={changeStatus}
-      >
-
-        <MenuItem value={"active"}>active</MenuItem>
-        <MenuItem value={"completed"}>completed</MenuItem>
-        <MenuItem value={"dropped"}>dropped</MenuItem>
-
-      </Select> */}
-  <CustomSelect data={data1} onSelectChange={changeStatus} />
-</FormControl>
-
-</Grid>
-
-</Grid>
-
-<br />
-<br />
-<br />
+  return (
+    <Container>
 
 
 
+      <div >
+        <Grid container spacing={3} >
+
+          <Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
+            <Button variant="contained" color="primary">Add new client</Button>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+            <p>Seacrch client</p>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+            <TextField label="Clients" style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onSearch}></TextField>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+            <p>Status</p>
+          </Grid>
+
+          <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+            <FormControl style={{ minWidth: '200px', margin: "1px" }}>
+
+           
+              <CustomSelect data={data1} onSelectChange={changeStatus} />
+            </FormControl>
+
+          </Grid>
+
+        </Grid>
+
+        <br />
+        <br />
+        <br />
+
+
+        <TableContainer component={Paper}>
+
+          <Table stickyHeader aria-label="sticky table" >
+
+            <TableHead>
+
+              <TableRow>
 
 
 
+                <TableCell align="center">Name</TableCell>
 
-<TableContainer component={Paper}>
+                <TableCell align="center">Project</TableCell>
 
-<Table stickyHeader aria-label="sticky table" >
-
-<TableHead>
-
-  <TableRow>
+                <TableCell align="center">Status</TableCell>
 
 
 
-    <TableCell align="center">Name</TableCell>
+              </TableRow>
 
-    <TableCell align="center">Project</TableCell>
+            </TableHead>
 
-    <TableCell align="center">Status</TableCell>
+            <TableBody>
 
+              {
+                dataSet.map((p) => {
+                  // eslint-disable-next-line
+                  { console.log(p) }
+                  return <TableRow >
+                    <TableCell align="center" ><p onClick={()=>{editclient(p.name)}} value={p.name}>{p.name}</p></TableCell>
+                    <TableCell align="center">{p.project}</TableCell>
+                    <TableCell align="center">{p.status}</TableCell>
+                  </TableRow>
+                })
+              }
 
+            </TableBody>
 
-  </TableRow>
+          </Table>
 
-</TableHead>
+        </TableContainer>
 
-<TableBody>
+        <br />
+        <br />
+        <div style={{ textAlign: "center" }} align="center">
 
-  {
-
-    dataSet.map((p) => {
-      // eslint-disable-next-line
-      { console.log(p) }
-      return <TableRow >
-
-
-        <TableCell align="center" onClick={()=>{setPopUpOpen(true);setVisible("none")}}>{p.name}</TableCell>
-
-        <TableCell align="center">{p.project}</TableCell>
-        <TableCell align="center">{p.status}</TableCell>
-
-
-
-
-
-      </TableRow>
-
-    })
-
-  }
-
-</TableBody>
-
-</Table>
-
-</TableContainer>
-
-<br />
-<br />
-<div style={{ textAlign: "center" }} align="center">
-
-<Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated} />
-</div>
-    </div>
-  </Container>)
+          <Pagination style={{ display: "inline-block" }} count={10} onChange={pageNumberUpdated} />
+        </div>
+      </div>
+    </Container>)
 
 
 }
 
 
 
-export default Home1;
+export default Home;

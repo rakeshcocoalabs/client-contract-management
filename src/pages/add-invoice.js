@@ -138,6 +138,16 @@ const AddInvoice = () => {
 
     useEffect(() => {
 
+        let validity = localStorage.getItem('validity')
+
+        const d1 = new Date();
+
+        const d2 = d1.getTime()
+
+        if (d2 > validity) {
+            history.push("/login");
+        }
+
 
         if (mounted === false) {
             setMounted(true)
@@ -162,10 +172,10 @@ const AddInvoice = () => {
 
         if (invoicenumber.trim() === "") { alert('mention invoice number ') }
 
-       // if (invoiceDate.trim() === "") { alert('mention invoice date ') }
+        // if (invoiceDate.trim() === "") { alert('mention invoice date ') }
 
 
-        const data = {} 
+        const data = {}
 
 
         data.name = name
@@ -174,17 +184,17 @@ const AddInvoice = () => {
         data.number = parseInt(invoicenumber)
         data.date = invoiceDate.toString();
         data.phone = phone;
-       
 
 
 
-        
+
+
         try {
             let url = "http://localhost:3080/clients/add-invoice"
 
 
 
-           
+
 
             let response = await axios.post(url, data);
             console.log(response);
@@ -195,17 +205,17 @@ const AddInvoice = () => {
 
 
 
-            let response_1 = await axios.post(url_1, {id:id,estimate:estimate});
+            let response_1 = await axios.post(url_1, { id: id, estimate: estimate });
             console.log(response_1);
-           
+
 
             //alert(response_2.data);
 
-            const url_2 = "http://localhost:3080/clients/make-pdf" 
+            const url_2 = "http://localhost:3080/clients/make-pdf"
 
             var docObject = {
-                name:name,
-                id:id
+                name: name,
+                id: id
 
             }
 
@@ -303,7 +313,7 @@ const AddInvoice = () => {
                     <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" id={'name'} onChange={onphoneChange} ></TextField>
                 </Grid>
 
-                
+
 
 
 
@@ -353,9 +363,9 @@ const AddInvoice = () => {
 
             </TableContainer>
 
-            <br/>
-            <br/>
-            <br/>
+            <br />
+            <br />
+            <br />
 
 
             <Grid container spacing={3} >
@@ -367,7 +377,7 @@ const AddInvoice = () => {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small"  onChange={onDescChange} placeholder="description"></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={onDescChange} placeholder="description"></TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={4} style={{ textAlign: 'center', alignItems: "center" }} >
