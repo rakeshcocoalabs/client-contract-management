@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { TextField, Button, Select, MenuItem } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
 import { Grid, FormControl } from '@material-ui/core'
@@ -29,13 +29,25 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 
 
-
+import { useHistory } from "react-router-dom";
 
 function Contract() {
 
 
-    
-    
+
+    const history = useHistory();
+
+    useEffect(() => {
+        let validity = localStorage.getItem('validity')
+
+        const d1 = new Date();
+
+        const d2 = d1.getTime()
+
+        if (d2 > validity) {
+            history.push("/login");
+        }
+    }, [history])
 
 
     const [name, setName] = useState('')
@@ -58,6 +70,8 @@ function Contract() {
     const [poData, setPoData] = useState("")
 
     const [poValue, setPoValue] = useState(0)
+
+    const [project, setProject] = useState("")
 
     const [estimate, setEstimate] = useState([])
 
@@ -96,23 +110,15 @@ function Contract() {
     const poDataChange = (e) => { setPoData(e.target.value); }
     const poValueChange = (e) => { setPoValue(e.target.value); }
 
+    const projectChanged = (e) => { setProject(e.target.value) }
+
 
     const addEstimateRow = () => {
+        setEstimate([...estimate, { milestone: estimateRow_1, percent: estimateRow_2, amount: estimateRow_3, }]);
 
-        
-
-       
-        
-        
-
-        
-        setEstimate([...estimate,{milestone: estimateRow_1,percent: estimateRow_2,amount: estimateRow_3,}]);
-
-        //window.location.reload(false)
-        
     }
 
-   
+
 
     const addClient = async () => {
 
@@ -137,6 +143,9 @@ function Contract() {
         if (poData.trim() === "") { alert('improper PO details') }
 
         if (poValue.trim() === "") { alert('improper PO value') }
+        if (project.trim() === "") { alert('improper project name') }
+
+
 
 
         const data = new FormData()
@@ -155,35 +164,24 @@ function Contract() {
             date: currentDate.toString(),
             value: poValue
         })
+        data.append("project", project)
 
-        data.append("clientId", "616f9b5abbeb4d7e57b572c2")
+        var url_1 = "http://localhost:3080/clients/add-project/"+name
+
+        const result_1 = await axios.get(url_1);
+
+        if(!result_1){
+            alert("the client name does not exist in our collection")
+        }
+        if(!result_1._id){
+            alert("Something wrong please inform service team")
+        }
+
+        data.append("clientId", result_1._id)
         try {
             let url = "http://localhost:3080/clients/add-project"
 
-            // let params = {
-            //     name: name,
-            //     contactName: contact,
-            //     email: email,
-            //     address: address,
-            //     gstIn: gst,
-            //     country: country,
-            //     state: state,
-            //     phone: phone,
-            //     supplyPlace: place,
-            //     PO: {
-            //         number: "2504",
-            //         details: "lorem ipsum",
-            //         date: "12/05/25",
-            //         value: 50000
-            //     },
-            //     terms:
-            //         [{
-            //             milestone: "advances",
-            //             percent: 15,
-            //             amount: 7500
-            //         }],
-            //     clientId: "616f9b5abbeb4d7e57b572c2"
-            // }
+
 
             const config = { headers: { "Content-Type": "multipart/form-data" } };
 
@@ -191,10 +189,10 @@ function Contract() {
             console.log(response);
 
             let id = response.data.output._id;
-            
-            const url_1 = "http://localhost:3080/clients/add-project-milestone/"+id
 
-           
+            const url_1 = "http://localhost:3080/clients/add-project-milestone/" + id
+
+
 
             let response_2 = await axios.post(url_1, estimate);
             console.log(response_2);
@@ -221,7 +219,7 @@ function Contract() {
 
 
 
-                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "right" }} >
                     <p>Client name</p>
                 </Grid>
 
@@ -229,7 +227,7 @@ function Contract() {
                     <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={nameChange} id={'name'} ></TextField>
                 </Grid>
 
-                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "right" }} >
                     <p>Country</p>
                 </Grid>
 
@@ -273,7 +271,7 @@ function Contract() {
 
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <p>E-- mail</p>
+                    <p>E mail</p>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -358,6 +356,14 @@ function Contract() {
                     <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={poValueChange} ></TextField>
                 </Grid>
 
+                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+                    <p>Project Name</p>
+                </Grid>
+
+                <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={projectChanged} ></TextField>
+                </Grid>
+
 
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
@@ -368,37 +374,18 @@ function Contract() {
                     <input type="file" onChange={(e) => setImage(e.target.files[0])} />
                 </Grid>
 
-
-
-
-
             </Grid>
 
             <br />
             <br />
-
-
             <br />
-            <br />
-
-            <Grid container spacing={3} >
-
-                <Grid item xs={12} md={12} lg={12} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <Button onClick={addClient} style={{ backgroundColor: "#125689" }}>   Submit   </Button>
-                </Grid>
-
-
-
-            </Grid>
-
-            <br />
-            <br />
+           
 
             <TableContainer component={Paper}>
 
                 <Table stickyHeader aria-label="sticky table" >
 
-                    
+
 
                     <TableBody>
 
@@ -454,7 +441,17 @@ function Contract() {
 
             </Grid>
 
+            <br />
 
+            <Grid container spacing={3} >
+
+                <Grid item xs={12} md={12} lg={12} style={{ textAlign: 'center', alignItems: "center" }} >
+                    <Button onClick={addClient} style={{ backgroundColor: "#125689" }}>   Submit   </Button>
+                </Grid>
+
+
+
+            </Grid>
 
         </Container>
     )

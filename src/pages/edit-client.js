@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { TextField, Button, Select, MenuItem } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
 import { Grid, FormControl } from '@material-ui/core'
+import { useHistory } from "react-router-dom";
 //import CustomSelect from "../component/customselect.js";
 
 // import Table from '@material-ui/core/Table';
@@ -26,6 +27,8 @@ import axios from 'axios';
 
 
 function EditClient(props) {
+
+    const history = useHistory();
 
     const [id, setId] = useState('')
 
