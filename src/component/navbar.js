@@ -58,7 +58,7 @@ function Navbar() {
             </Link>
 
             <Link to="/add-project" className={classes.link}>
-              Contract
+              Contracts
             </Link>
             <Link to="/add-invoice" className={classes.link}>
               Invoice
