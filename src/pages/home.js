@@ -62,13 +62,17 @@ function Home() {
   useEffect(() => {
     let validity = localStorage.getItem('validity')
 
-    const d1 = new Date();
+    if (validity) {
+      const d1 = new Date();
 
-    const d2 = d1.getTime()
+      const d2 = d1.getTime()
 
-    if (d2 > validity) {
-      history.push("/login");
+      if (d2 > validity) {
+        history.push("/login");
+      }
     }
+
+
 
     if (dataSet.length === 0) {
       makeAPICall();
@@ -101,8 +105,8 @@ function Home() {
 
   }
 
-  const editclient = (e) =>{
-    localStorage.setItem('client',e);
+  const editclient = (e) => {
+    localStorage.setItem('client', e);
     history.push("/edit-client");
   }
 
@@ -181,7 +185,7 @@ function Home() {
           <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
             <FormControl style={{ minWidth: '200px', margin: "1px" }}>
 
-           
+
               <CustomSelect data={data1} onSelectChange={changeStatus} />
             </FormControl>
 
@@ -223,7 +227,7 @@ function Home() {
                   // eslint-disable-next-line
                   { console.log(p) }
                   return <TableRow >
-                    <TableCell align="center" ><p onClick={()=>{editclient(p.name)}} value={p.name}>{p.name}</p></TableCell>
+                    <TableCell align="center" ><p onClick={() => { editclient(p.name) }} value={p.name}>{p.name}</p></TableCell>
                     <TableCell align="center">{p.project}</TableCell>
                     <TableCell align="center">{p.status}</TableCell>
                   </TableRow>
