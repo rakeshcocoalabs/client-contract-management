@@ -60,6 +60,7 @@ function Home() {
   // }
 
   useEffect(() => {
+    console.log("heloo rakesh")
     let validity = localStorage.getItem('validity')
 
     if (validity) {
