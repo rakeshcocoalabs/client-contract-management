@@ -16,7 +16,7 @@
     "@testing-library/react": "^11.2.6",
     "@testing-library/user-event": "^12.8.3",
     "axios": "^0.23.0",
-    "build": "react-scripts --max_old_space_size=4096 build",
+   
     "file-saver": "^2.0.5",
     "firebase": "^9.3.0",
     "moment": "^2.29.1",
