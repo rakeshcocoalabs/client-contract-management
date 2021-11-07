@@ -113,7 +113,7 @@ function Home() {
   const makeAPICall = async () => {
     try {
 
-      var url = 'http://localhost:3080/clients/list-project?'
+      var url = 'http://143.198.168.131:3080/clients/list-project?'
 
       console.log("hi", search)
 
