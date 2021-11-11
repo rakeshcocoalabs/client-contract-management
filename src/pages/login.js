@@ -24,7 +24,7 @@ const Login = withStyles()(props => {
         let body = { email: email, password: password }
 
 
-        let resp = await axios.post('http://localhost:3080/accounts/login', body, { mode: 'cors' });
+        let resp = await axios.post('http://143.198.168.131:3080/accounts/login', body, { mode: 'cors' });
         setLoading(true)
         setVisible('hidden')
         setTimeout(function () { setLoading(false); setVisible('visible') }, 1000);

@@ -41,6 +41,8 @@ function Home() {
         if (d2 > validity) {
             history.push("/login");
         }
+
+       
         // eslint-disable-next-line
     }, [])
 
@@ -111,7 +113,7 @@ function Home() {
 
 
         try {
-            let url = "http://localhost:3080/clients/add-client"
+            let url = "http://143.198.168.131:3080/clients/add-client"
 
             let params = {
                 name: name,

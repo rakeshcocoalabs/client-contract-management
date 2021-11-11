@@ -1,4 +1,5 @@
 import React, { useEffect } from "react";
+//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
 import { useHistory } from "react-router-dom";
 import { Button, TextField } from '@material-ui/core'
 import Container from '@material-ui/core/Container'
@@ -75,17 +76,21 @@ function Home() {
 
 
 
-    if (dataSet.length === 0) {
+   // if (dataSet.length === 0) {
       makeAPICall();
-    }
+    //}
 
     // eslint-disable-next-line
-  }, [search, status, page, dataSet])
+  }, [search, status, page])
 
   const pageNumberUpdated = (event, data) => {
 
     console.log(data)
     setPage(data)
+  }
+
+  const newClient=()=>{
+    history.push("/add-client");
   }
 
   const changeStatus = (event) => {
@@ -99,10 +104,9 @@ function Home() {
 
   const onSearch = (e) => {
 
-    console.log("ji", search)
-    console.log("pi", e.target.value)
+    
     setSearch(e.target.value);
-    console.log("xi", search)
+   
 
   }
 
@@ -168,7 +172,7 @@ function Home() {
         <Grid container spacing={3} >
 
           <Grid item xs={12} md={12} lg={12} style={{ marginTop: '10px', textAlign: 'right' }} >
-            <Button variant="contained" color="primary">Add new client</Button>
+            <Button variant="contained" color="primary" onClick={newClient}>Add new client</Button>
           </Grid>
 
           <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >

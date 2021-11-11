@@ -49,7 +49,7 @@ const AddInvoice = () => {
     const classes = useStyles();
 
     const getClients = async () => {
-        const url = "http://localhost:3080/clients/list-clients"
+        const url = "http://143.198.168.131:3080/clients/list-clients"
 
         try {
 
@@ -183,15 +183,21 @@ const AddInvoice = () => {
         data.contactName = contact
         data.email = email
         data.number = parseInt(invoicenumber)
-        data.date = invoiceDate.toString();
+        data.invoiceDate = invoiceDate.getTime()
         data.phone = phone;
+
+        let strDateIn = invoiceDate.toString()
+        let arrdate = strDateIn.split(" ");
+        let strDate = arrdate[1]+":"+arrdate[2]+":"+arrdate[3]
+
+        data.strDate = strDate
 
 
 
 
 
         try {
-            let url = "http://localhost:3080/clients/add-invoice"
+            let url = "http://143.198.168.131:3080/clients/add-invoice"
 
 
 
@@ -202,7 +208,7 @@ const AddInvoice = () => {
 
             let id = response.data.output._id;
 
-            const url_1 = "http://localhost:3080/clients/add-invoice-line"
+            const url_1 = "http://143.198.168.131:3080/clients/add-invoice-line"
 
 
 
@@ -212,7 +218,7 @@ const AddInvoice = () => {
 
             //alert(response_2.data);
 
-            const url_2 = "http://localhost:3080/clients/make-pdf"
+            const url_2 = "http://143.198.168.131:3080/clients/make-pdf"
 
             var docObject = {
                 name: name,

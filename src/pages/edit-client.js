@@ -38,7 +38,7 @@ function EditClient(props) {
 
 
 
-        var url = "http://localhost:3080/clients/get-client/" + client
+        var url = "http://143.198.168.131:3080/clients/get-client/" + client
 
         const info = await axios.get(url);
 
@@ -175,7 +175,7 @@ function EditClient(props) {
 
 
         try {
-            let url = "http://localhost:3080/clients/update-client/" + id;
+            let url = "http://143.198.168.131:3080/clients/update-client/" + id;
 
             console.log("poooooj", url)
 

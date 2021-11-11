@@ -4,6 +4,8 @@ import Container from '@material-ui/core/Container'
 import { Grid, FormControl } from '@material-ui/core'
 //import CustomSelect from "../component/customselect.js";
 
+import { makeStyles } from '@material-ui/core/styles';
+
 import DateMomentUtils from '@date-io/moment';
 import {
     DatePicker,
@@ -33,6 +35,48 @@ import { useHistory } from "react-router-dom";
 
 function Contract() {
 
+    const [mounted, setMounted] = useState(false)
+
+    const useStyles = makeStyles((theme) => ({
+        formControl: {
+            margin: theme.spacing(1),
+            minWidth: 220,
+        },
+    }));
+    const selectClient = (event) => {
+        var index = event.target.value
+        if (clients[index]) {
+            setName(clients[index].name)
+            setEmail(clients[index].email)
+            setContact(clients[index].contactName)
+        }
+    }
+
+    const classes = useStyles();
+
+    const getClients = async () => {
+        const url = "http://143.198.168.131:3080/clients/list-clients"
+
+        try {
+
+            const resp = await axios.get(url, { mode: "cors" });
+
+            console.log("resp", resp)
+
+            if (resp && resp.data && resp.data.output) {
+
+                setClients(resp.data.output)
+            }
+
+        }
+        catch (err) {
+            console.log(err.message)
+        }
+
+
+    }
+
+
 
 
     const history = useHistory();
@@ -47,8 +91,13 @@ function Contract() {
         if (d2 > validity) {
             history.push("/login");
         }
-    }, [history])
+        if (mounted === false) {
+            setMounted(true)
+            getClients()
+        }
+    }, [history,mounted])
 
+    const [clients, setClients] = useState([])
 
     const [name, setName] = useState('')
     const [contact, setContact] = useState('')
@@ -68,6 +117,8 @@ function Contract() {
     const [poNumber, setPoNumber] = useState("")
 
     const [poData, setPoData] = useState("")
+
+   
 
     const [poValue, setPoValue] = useState(0)
 
@@ -92,7 +143,7 @@ function Contract() {
         setEstimateRow_3(e.target.value)
     }
 
-    const nameChange = (e) => { setName(e.target.value); }
+
     const contactChange = (e) => { setContact(e.target.value); }
     const emailChange = (e) => { setEmail(e.target.value); }
     const addressChange = (e) => { setAddress(e.target.value); }
@@ -122,6 +173,8 @@ function Contract() {
 
     const addClient = async () => {
 
+
+
         setcountry("India")
 
         if (name.trim() === "") { alert('fill client name') }
@@ -142,7 +195,7 @@ function Contract() {
 
         if (poData.trim() === "") { alert('improper PO details') }
 
-        if (poValue.trim() === "") { alert('improper PO value') }
+        //if (poValue.trim() === "") { alert('improper PO value') }
         if (project.trim() === "") { alert('improper project name') }
 
 
@@ -166,20 +219,33 @@ function Contract() {
         })
         data.append("project", project)
 
-        var url_1 = "http://localhost:3080/clients/add-project/"+name
+        var url_1 = "http://143.198.168.131:3080/clients/get-client/" + name
 
         const result_1 = await axios.get(url_1);
 
-        if(!result_1){
-            alert("the client name does not exist in our collection")
+        console.log(url_1)
+        console.log(result_1)
+        var gotName = "";
+
+        if (result_1) {
+            if (result_1.data) {
+                if (result_1.data.output) {
+                    if (result_1.data.output._id) {
+                        gotName = result_1.data.output._id;
+                    }
+                }
+            }
         }
-        if(!result_1._id){
+        if (gotName === "") {
             alert("Something wrong please inform service team")
         }
 
-        data.append("clientId", result_1._id)
+
+
+        data.append("clientId", result_1.data.output._id)
+
         try {
-            let url = "http://localhost:3080/clients/add-project"
+            let url = "http://143.198.168.131:3080/clients/add-project"
 
 
 
@@ -190,7 +256,7 @@ function Contract() {
 
             let id = response.data.output._id;
 
-            const url_1 = "http://localhost:3080/clients/add-project-milestone/" + id
+            const url_1 = "http://143.198.168.131:3080/clients/add-project-milestone/" + id
 
 
 
@@ -224,7 +290,16 @@ function Contract() {
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={nameChange} id={'name'} ></TextField>
+                    <FormControl className={classes.formControl} >
+
+                        <Select onChange={selectClient}>
+                            {clients.map((post, key) =>
+                                <MenuItem value={key}>
+                                    {post.name}
+                                </MenuItem>
+                            )}
+                        </Select>
+                    </FormControl>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "right" }} >
@@ -237,14 +312,17 @@ function Contract() {
                         <Select
                             id="select-demo"
                             labelId="select-demo"
-                            value={''}
+                            value={country}
                             onChange={countryChange}
 
                         >
 
-                            <MenuItem value={"India"}>active</MenuItem>
-                            <MenuItem value={"UAE"}>completed</MenuItem>
-                            <MenuItem value={"KSA"}>dropped</MenuItem>
+                            <MenuItem value={"India"}>India</MenuItem>
+                            <MenuItem value={"UAE"}>UAE</MenuItem>
+                            <MenuItem value={"KSA"}>Saudi Arabia</MenuItem>
+                            <MenuItem value={"Qatar"}>Qatar</MenuItem>
+                            <MenuItem value={"Bahrein"}>Bahrein</MenuItem>
+                            <MenuItem value={"Oman"}>Oman</MenuItem>
 
                         </Select>
                         {/* <CustomSelect data={data1} onChange={countryChange} /> */}
@@ -379,7 +457,7 @@ function Contract() {
             <br />
             <br />
             <br />
-           
+
 
             <TableContainer component={Paper}>
 
@@ -423,7 +501,7 @@ function Contract() {
 
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
-                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={mileStonechange} label={"Advance"} ></TextField>
+                    <TextField style={{ textAlign: 'center', alignItems: "center" }} variant="outlined" size="small" onChange={mileStonechange} label={"Stage"} ></TextField>
                 </Grid>
 
                 <Grid item xs={12} md={6} lg={3} style={{ textAlign: 'center', alignItems: "center" }} >
