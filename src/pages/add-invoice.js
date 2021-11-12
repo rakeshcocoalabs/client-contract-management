@@ -183,7 +183,7 @@ const AddInvoice = () => {
         data.contactName = contact
         data.email = email
         data.number = parseInt(invoicenumber)
-        data.invoiceDate = invoiceDate.getTime()
+        data.invoiceDate = Date(invoiceDate).getTime()
         data.phone = phone;
 
         let strDateIn = invoiceDate.toString()
